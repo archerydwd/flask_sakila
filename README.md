@@ -1871,7 +1871,32 @@ touch templates/base.html index.html
 >vim templates/countries/index.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>Country</th>
+				<th>Last Update</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, country, last_update in countries %}
+				<tr>
+					<td>{{ country }}</td>
+					<td>{{ last_update }} UTC</td>
+					<td><form action="{{ show_country_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_country_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_country_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_country_link }}">New Country</a>
+{% endblock %}
 ```
 
 **create.html**
@@ -1879,7 +1904,31 @@ touch templates/base.html index.html
 >vim templates/countries/create.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_country_link }}" method="post">
+		<p>
+			Country:<br>
+			<input name="country">
+		</p>
+		<p>
+			<input type="submit" value="Create Country">
+		</p>
+	</form>
+	<a href="{{ index_country_link }}">Back</a>
+{% endblock %}
 ```
 
 **show.html**
@@ -1887,7 +1936,23 @@ touch templates/base.html index.html
 >vim templates/countries/show.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, country, last_update in country %}
+		<p>
+			<strong>Country:</strong>
+			{{ country }}
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ last_update }} UTC
+		</p>
+
+		<form action="{{ update_country_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_country_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 **update.html**
