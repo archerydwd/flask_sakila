@@ -1263,8 +1263,482 @@ touch templates/stores/index.html show.html create.html update.html
 touch templates/base.html index.html
 ```
 
+**base.html**
 
+>vim templates/base.html
 
+```
+<!doctype html>
+<html>
+	<head>
+		<title>Flask sakila</title>
+	</head>
+	<body>
+		<h1>{{ heading }}</h1>
+		{% block body %}
 
+		{% endblock %}
+	</body>	
+</html>
+```
+
+**index.html**
+
+>vim templates/index.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+	<ul>
+		<li><a href="{{ index_actor_link }}">Actors</a></li>
+		<li><a href="{{ index_address_link }}">Addresses</a></li>
+		<li><a href="{{ index_category_link }}">Categories</a></li>
+		<li><a href="{{ index_city_link }}">Cities</a></li>
+		<li><a href="{{ index_country_link }}">Countries</a></li>
+		<li><a href="{{ index_customer_link }}">Customers</a></li>
+		<li><a href="{{ index_film_link }}">Films</a></li>
+		<li><a href="{{ index_filmtext_link }}">Film Texts</a></li>
+		<li><a href="{{ index_inventory_link }}">Inventories</a></li>
+		<li><a href="{{ index_language_link }}">Languages</a></li>
+		<li><a href="{{ index_payment_link }}">Payments</a></li>
+		<li><a href="{{ index_rental_link }}">Rentals</a></li>
+		<li><a href="{{ index_staff_link }}">Staff</a></li>
+		<li><a href="{{ index_store_link }}">Stores</a></li>
+	</ul>
+{% endblock %}
+```
+
+##Actors Templates
+
+**index.html**
+
+>vim templates/actors/index.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Last Update</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, first, last, last_update in actors %}
+				<tr>
+					<td>{{ first }}</td>
+					<td>{{ last }}</td>
+					<td>{{ last_update }} UTC</td>
+					<td><form action="{{ show_actor_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_actor_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_actor_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_actor_link }}">New Actor</a>
+{% endblock %}
+```
+
+**create.html**
+
+>vim templates/actors/create.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_actor_link }}" method="post">
+		<p>
+			First Name:<br>
+			<input name="first_name">
+		</p>
+		<p>
+			Last Name:<br>
+			<input name="last_name">
+		</p>
+		<p>
+			<input type="submit" value="Create Actor"/>
+		</p>
+	</form>
+	<a href="{{ index_actor_link }}">Back</a>
+{% endblock %}
+```
+
+**show.html**
+
+>vim templates/actors/show.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+	{% for id, first, last, last_update in actor %}
+		<p>
+			<strong>First Name:</strong>
+			{{ first }}
+		</p>
+		<p>
+			<strong>Last Name</strong>
+			{{ last }}
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ last_update }} UTC
+		</p>
+
+		<form action="{{ update_actor_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_actor_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
+```
+
+**update.html**
+
+>vim templates/actors/update.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+
+	{% for id, first_name, last_name, last_update in actor %}
+		<form action="{{ update_actor_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				First name<br>
+				<input name="first_name" value="{{ first_name }}">
+			</p>
+			<p>
+				Last name<br>
+				<input name="last_name" value="{{ last_name }}">
+			</p>
+			<p>
+				<input type="submit" value="Update Actor">
+			</p>
+		</form>
+		<form action="{{ show_actor_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_actor_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
+```
+
+##Addresses Templates
+
+**index.html**
+
+>vim templates/addresses/index.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>Address</th>
+				<th>District</th>
+				<th>City id</th>
+				<th>Postal code</th>
+				<th>Phone</th>
+				<th>Last updated</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, address, district, city_id, postal_code, phone, last_updated in addresses %}
+				<tr>
+					<td>{{ address }}</td>
+					<td>{{ district }}</td>
+					<td>{{ city_id }}</td>
+					<td>{{ postal_code }}</td>
+					<td>{{ phone }}</td>
+					<td>{{ last_updated }} UTC</td>
+					<td><form action="{{ show_address_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_address_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_address_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_address_link }}">New Address</a>
+{% endblock %}
+```
+
+**create.html**
+
+>vim templates/addresses/create.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_address_link }}" method="post">
+		<p>
+				Address:<br>
+				<input name="address">
+		</p>
+		<p>
+			District:<br>
+			<input name="district">
+		</p>
+		<p>
+			City Id:<br>
+			<input name="city_id">
+		</p>
+		<p>
+			Postal Code:<br>
+			<input name="postal_code">
+		</p>
+		<p>
+			Phone:<br>
+			<input name="phone">
+		</p>
+		<p>
+			<input type="submit" value="Create Address">
+		</p>
+	</form>
+	<a href="{{ index_address_link }}">Back</a>
+{% endblock %}
+```
+
+**show.html**
+
+>vim templates/addresses/show.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+	{% for id, address, district, city_id, postal_code, phone, last_updated in address %}
+
+		<p>
+			<strong>Address:</strong>
+			{{ address }}
+		</p>
+		<p>
+			<strong>District</strong>
+			{{ district }}
+		</p>
+		<p>
+			<strong>City id</strong>
+			{{ city_id }}
+		</p>
+		<p>
+			<strong>Postal code</strong>
+			{{ postal_code }}
+		</p>
+		<p>
+			<strong>Phone</strong>
+			{{ phone }}
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ address.last_update }} UTC
+		</p>
+		
+		<form action="{{ update_address_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_address_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
+```
+
+**update.html**
+
+>vim templates/addresses/update.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+
+	{% for id, address, district, city_id, postal_code, phone, last_updated in address %}
+	<form action="{{ update_address_save_link }}" method="post">
+			<input type="hidden" value="{{ id }}" name="id">
+			<p>
+				Address<br>
+				<input name="address" value="{{ address }}">
+			</p>
+			<p>
+				District<br>
+				<input name="district" value="{{ district }}">
+			</p>
+			<p>
+				City id<br>
+				<input name="city_id" value="{{ city_id }}">
+			</p>
+			<p>
+				Postal code<br>
+				<input name="postal_code" value="{{ postal_code }}">
+			</p>
+			<p>
+				Phone<br>
+				<input name="phone" value="{{ phone }}">
+			</p>
+			<p>
+				<input type="submit" value="Update Address">
+			</p>
+		</form>
+
+		<form action="{{ show_address_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_address_link }}" method="POST"><button type="submit">Back</button></form>
+	
+	{% endfor %}		
+{% endblock %}
+```
+
+##Categories Templates
+
+**index.html**
+
+>vim templates/categories/index.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Last Update</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, name, last_update in categories %}
+				<tr>
+					<td>{{ name }}</td>
+					<td>{{ last_update }} UTC</td>
+					<td><form action="{{ show_category_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_category_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_category_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_category_link }}">New Category</a>
+{% endblock %}
+```
+
+**create.html**
+
+>vim templates/categories/create.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_category_link }}" method="post">
+		<p>
+			Name:<br>
+			<input name="name">
+		</p>
+		<p>
+			<input type="submit" value="Create Category"/>
+		</p>
+	</form>
+	<a href="{{ index_category_link }}">Back</a>
+{% endblock %}
+```
+
+**show.html**
+
+>vim templates/categories/show.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+	{% for id, name, last_update in category %}
+		<p>
+			<strong>Name:</strong>
+			{{ name }}
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ last_update }} UTC
+		</p>
+
+		<form action="{{ update_category_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_category_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
+```
+
+**update.html**
+
+>vim templates/categories/update.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+
+	{% for id, name, last_update in category %}
+		<form action="{{ update_category_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				Name<br>
+				<input name="name" value="{{ name }}">
+			</p>
+			<p>
+				<input type="submit" value="Update Category">
+			</p>
+		</form>
+		<form action="{{ show_category_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_category_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
+```
+
+##Cities Templates
+
+**index.html**
+
+>vim templates/cities/index.html
+
+```
 
 
