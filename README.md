@@ -1233,12 +1233,26 @@ mkdir templates/categories
 mkdir templates/cities
 mkdir templates/countries
 mkdir templates/customers
-mkdir templates/
-mkdir templates/
-mkdir templates/
-mkdir templates/
+mkdir templates/films
+mkdir templates/filmtexts
+mkdir templates/inventories
+mkdir templates/languages
+mkdir templates/payments
+mkdir templates/rentals
+mkdir templates/staffs
+mkdir templates/stores
 ```
 
+**Create the files**
+
+```
+touch templates/actors/index.html show.html create.html update.html
+touch templates/addresses/index.html show.html create.html update.html
+touch templates/categories/index.html show.html create.html update.html
+touch templates/cities/index.html show.html create.html update.html
+touch templates/categories/index.html show.html create.html update.html
+touch templates/cities/index.html show.html create.html update.html
+```
 
 
 
