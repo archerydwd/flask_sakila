@@ -1250,9 +1250,20 @@ touch templates/actors/index.html show.html create.html update.html
 touch templates/addresses/index.html show.html create.html update.html
 touch templates/categories/index.html show.html create.html update.html
 touch templates/cities/index.html show.html create.html update.html
-touch templates/categories/index.html show.html create.html update.html
-touch templates/cities/index.html show.html create.html update.html
+touch templates/countries/index.html show.html create.html update.html
+touch templates/customers/index.html show.html create.html update.html
+touch templates/films/index.html show.html create.html update.html
+touch templates/filmtexts/index.html show.html create.html update.html
+touch templates/inventories/index.html show.html create.html update.html
+touch templates/languages/index.html show.html create.html update.html
+touch templates/payments/index.html show.html create.html update.html
+touch templates/rentals/index.html show.html create.html update.html
+touch templates/staffs/index.html show.html create.html update.html
+touch templates/stores/index.html show.html create.html update.html
+touch templates/base.html index.html
 ```
+
+
 
 
 
