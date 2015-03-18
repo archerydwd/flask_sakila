@@ -1740,5 +1740,466 @@ touch templates/base.html index.html
 >vim templates/cities/index.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>City</th>
+				<th>Country Id</th>
+				<th>Last Update</th>
+			</tr>
+		</thead>
 
+		<tbody>
+			{% for id, city, country_id, last_update in cities %}
+				<tr>
+					<td>{{ city }}</td>
+					<td>{{ country_id }}</td>
+					<td>{{ last_update }} UTC</td>
+					<td><form action="{{ show_city_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_city_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_city_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_city_link }}">New City</a>
+{% endblock %}
+```
+
+**create.html**
+
+>vim templates/cities/create.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_city_link }}" method="post">
+		<p>
+			City:<br>
+			<input name="city">
+		</p>
+		<p>
+			Country Id:<br>
+			<input name="country_id">
+		</p>
+		<p>
+			<input type="submit" value="Create City"/>
+		</p>
+	</form>
+	<a href="{{ index_city_link }}">Back</a>
+{% endblock %}
+```
+
+**show.html**
+
+>vim templates/cities/show.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+	{% for id, city, country_id, last_update in city %}
+		<p>
+			<strong>City:</strong>
+			{{ city }}
+		</p>
+		<p>
+			<strong>Country Id:</strong>
+			{{ country_id }}
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ last_update }} UTC
+		</p>
+
+		<form action="{{ update_city_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_city_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
+```
+
+**update.html**
+
+>vim templates/cities/update.html
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+
+	{% for id, city, country_id, last_update in city %}
+		<form action="{{ update_city_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				City<br>
+				<input name="city" value="{{ city }}">
+			</p>
+			<p>
+				Country Id<br>
+				<input name="country_id" value="{{ country_id }}">
+			</p>
+			<p>
+				<input type="submit" value="Update City">
+			</p>
+		</form>
+		<form action="{{ show_city_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_city_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
+```
+
+##Countries Templates
+
+**index.html**
+
+>vim templates/countries/index.html
+
+```
+
+```
+
+**create.html**
+
+>vim templates/countries/create.html
+
+```
+
+```
+
+**show.html**
+
+>vim templates/countries/show.html
+
+```
+
+```
+
+**update.html**
+
+>vim templates/countries/update.html
+
+```
+
+```
+
+##Customers Templates
+
+**index.html**
+
+>vim templates/customers/index.html
+
+```
+
+```
+
+**create.html**
+
+>vim templates/customers/create.html
+
+```
+
+```
+
+**show.html**
+
+>vim templates/customers/show.html
+
+```
+
+```
+
+**update.html**
+
+>vim templates/customers/update.html
+
+```
+
+```
+
+##Films Templates
+
+**index.html**
+
+>vim templates/films/index.html
+
+```
+
+```
+
+**create.html**
+
+>vim templates/films/create.html
+
+```
+
+```
+
+**show.html**
+
+>vim templates/films/show.html
+
+```
+
+```
+
+**update.html**
+
+>vim templates/films/update.html
+
+```
+
+```
+
+##Filmtexts Templates
+
+**index.html**
+
+>vim templates/filmtexts/index.html
+
+```
+
+```
+
+**create.html**
+
+>vim templates/filmtexts/create.html
+
+```
+
+```
+
+**show.html**
+
+>vim templates/filmtexts/show.html
+
+```
+
+```
+
+**update.html**
+
+>vim templates/filmtexts/update.html
+
+```
+
+```
+
+##Inventories Templates
+
+**index.html**
+
+>vim templates/inventories/index.html
+
+```
+
+```
+
+**create.html**
+
+>vim templates/inventories/create.html
+
+```
+
+```
+
+**show.html**
+
+>vim templates/inventories/show.html
+
+```
+
+```
+
+**update.html**
+
+>vim templates/inventories/update.html
+
+```
+
+```
+
+##Languages Templates
+
+**index.html**
+
+>vim templates/languages/index.html
+
+```
+
+```
+
+**create.html**
+
+>vim templates/languages/create.html
+
+```
+
+```
+
+**show.html**
+
+>vim templates/languages/show.html
+
+```
+
+```
+
+**update.html**
+
+>vim templates/languages/update.html
+
+```
+
+```
+
+##Payments Templates
+
+**index.html**
+
+>vim templates/payments/index.html
+
+```
+
+```
+
+**create.html**
+
+>vim templates/payments/create.html
+
+```
+
+```
+
+**show.html**
+
+>vim templates/payments/show.html
+
+```
+
+```
+
+**update.html**
+
+>vim templates/payments/update.html
+
+```
+
+```
+
+##Rentals Templates
+
+**index.html**
+
+>vim templates/rentals/index.html
+
+```
+
+```
+
+**create.html**
+
+>vim templates/rentals/create.html
+
+```
+
+```
+
+**show.html**
+
+>vim templates/rentals/show.html
+
+```
+
+```
+
+**update.html**
+
+>vim templates/rentals/update.html
+
+```
+
+```
+
+##Staffs Templates
+
+**index.html**
+
+>vim templates/staffs/index.html
+
+```
+
+```
+
+**create.html**
+
+>vim templates/staffs/create.html
+
+```
+
+```
+
+**show.html**
+
+>vim templates/staffs/show.html
+
+```
+
+```
+
+**update.html**
+
+>vim templates/staffs/update.html
+
+```
+
+```
+
+##Stores Templates
+
+**index.html**
+
+>vim templates/stores/index.html
+
+```
+
+```
+
+**create.html**
+
+>vim templates/stores/create.html
+
+```
+
+```
+
+**show.html**
+
+>vim templates/stores/show.html
+
+```
+
+```
+
+**update.html**
+
+>vim templates/stores/update.html
+
+```
+
+```
