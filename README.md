@@ -1180,7 +1180,7 @@ if __name__ == "__main__":
 	app.config['DB_USER'] = 'root'
 	app.config['DB_PASSWORD'] = 'password'
 	app.config['DB'] = 'flask_sakila'
-	app.run()
+	app.run(debug=True)
 ```
 
 In the above I have imported all relevant libraries. I have then divided up the file into the seperate parts as per the database's tables. Inside each of these parts I have set up routes and methods for the CRUD actions. At the bottom I have included the if __name__ == "__main__" statement to tell if the app is being run locally or if it's on a platform that runs it automatically. If run locally we need to do app.run inside the if statement. We also set up the connection details inside the if statement.
@@ -1960,7 +1960,25 @@ touch templates/base.html index.html
 >vim templates/countries/update.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% for id, country, last_update in country %}
+		<form action="{{ update_country_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				Country<br>
+				<input name="country" value="{{ country }}">
+			</p>
+			<p>
+				<input type="submit" value="Update Country">
+			</p>
+		</form>
+		<form action="{{ show_country_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_country_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 ##Customers Templates
@@ -1970,7 +1988,44 @@ touch templates/base.html index.html
 >vim templates/customers/index.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>Store Id</th>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Email</th>
+				<th>Address Id</th>
+				<th>Active</th>
+				<th>Create Date</th>
+				<th>Last Update</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, store_id, first_name, last_name, email, address_id, active, create_date, last_update in customers %}
+				<tr>
+					<td>{{ store_id }}</td>
+					<td>{{ first_name }}</td>
+					<td>{{ last_name }}</td>
+					<td>{{ email }}</td>
+					<td>{{ address_id }}</td>
+					<td>{{ active }}</td>
+					<td>{{ create_date }} UTC</td>
+					<td>{{ last_update }} UTC</td>
+					<td><form action="{{ show_customer_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_customer_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_customer_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_customer_link }}">New Customer</a>
+{% endblock %}
 ```
 
 **create.html**
@@ -1978,7 +2033,52 @@ touch templates/base.html index.html
 >vim templates/customers/create.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_customer_link }}" method="post">
+		<p>
+			Store id:<br>
+			<input name="store_id">
+		</p>
+		<p>
+			First name:<br>
+			<input name="first_name">
+		</p>
+		<p>
+			Last name:<br>
+			<input name="last_name">
+		</p>
+		<p>
+			Email:<br>
+			<input name="email">
+		</p>
+		<p>
+			Address id:<br>
+			<input name="address_id">
+		</p>
+		<p>
+			Active:<br>
+			<input type="checkbox" name="active">
+		</p>
+		<p>
+			<input type="submit" value="Create Customer"/>
+		</p>
+
+	</form>
+	<a href="{{ index_customer_link }}">Back</a>
+{% endblock %}
 ```
 
 **show.html**
@@ -1986,7 +2086,46 @@ touch templates/base.html index.html
 >vim templates/customers/show.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, store_id, first_name, last_name, email, address_id, active, create_date, last_update in customer %}
+		<p>
+			<strong>Store id</strong>
+			{{ store_id }}
+		</p>
+		<p>
+			<strong>First name</strong>
+			{{ first_name }}
+		</p>
+		<p>
+			<strong>Last name</strong>
+			{{ last_name }}
+		</p>
+		<p>
+			<strong>Email</strong>
+			{{ email }}
+		</p>
+		<p>
+			<strong>Address id</strong>
+			{{ address_id }}
+		</p>
+		<p>
+			<strong>Active</strong>
+			{{ active }}
+		</p>
+		<p>
+			<strong>Creation date</strong>
+			{{ create_date }} UTC
+		</p>
+		<p>
+			<strong>Last update</strong>
+			{{ last_update }} UTC
+		</p>
+		<form action="{{ update_customer_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_customer_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 **update.html**
@@ -1994,7 +2133,45 @@ touch templates/base.html index.html
 >vim templates/customers/update.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, store_id, first_name, last_name, email, address_id, active, create_date, last_update in customer %}
+		<form action="{{ update_customer_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				Store id<br>
+				<input name="store_id" value="{{ store_id }}"/>
+			</p>
+			<p>
+				First name<br>
+				<input name="first_name" value="{{ first_name }}"/>
+			</p>
+			<p>
+				Last name<br>
+				<input name="last_name" value="{{ last_name }}"/>
+			</p>
+			<p>
+				Email<br>
+				<input name="email" value="{{ email }}"/>
+			</p>
+			<p>
+				Address id<br>
+				<input name="address_id" value="{{ address_id }}"/>
+			</p>
+			<p>
+				Active<br>
+				<input name="active" value="{{ active }}"/>
+			</p>
+			<p>
+				<input type="submit" value="Update Customer"/>
+			</p>
+																																																																				
+		</form>
+		<form action="{{ show_customer_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_customer_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 ##Films Templates
@@ -2004,7 +2181,50 @@ touch templates/base.html index.html
 >vim templates/films/index.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>Title</th>
+				<th>Description</th>
+				<th>Release year</th>
+				<th>Language id</th>
+				<th>Rental duration</th>
+				<th>Rental rate</th>
+				<th>Length</th>
+				<th>Replacement cost</th>
+				<th>Rating</th>
+				<th>Special features</th>
+				<th>Last updated</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, title, description, release_year, language_id, rental_duration, rental_rate, length, replacement_cost, rating, special_features, last_update in films %}
+				<tr>
+					<td>{{ title }}</td>
+					<td>{{ description }}</td>
+					<td>{{ release_year }}</td>
+					<td>{{ language_id }}</td>
+					<td>{{ rental_duration }}</td>
+					<td>{{ rental_rate }}</td>
+					<td>{{ length }}</td>
+					<td>{{ replacement_cost }}</td>
+					<td>{{ rating }}</td>
+					<td>{{ special_features }}</td>
+					<td>{{ last_update }} UTC</td>
+					<td><form action="{{ show_film_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_film_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_film_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_film_link }}">New Film</a>
+{% endblock %}
 ```
 
 **create.html**
@@ -2012,7 +2232,67 @@ touch templates/base.html index.html
 >vim templates/films/create.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_film_link }}" method="post">
+		<p>
+			Title:<br>
+			<input name="title">
+		</p>
+		<p>
+			Description:<br>
+			<input name="description">
+		</p>
+		<p>
+			Release year:<br>
+			<input name="release_year">
+		</p>
+		<p>
+			Language id:<br>
+			<input name="language_id">
+		</p>
+		<p>
+			Rental duration:<br>
+			<input name="rental_duration">
+		</p>
+		<p>
+			Rental rate:<br>
+			<input name="rental_rate">
+		</p>
+		<p>
+			Length:<br>
+			<input name="length">
+		</p>
+		<p>
+			Replacement cost:<br>
+			<input name="replacement_cost">
+		</p>
+		<p>
+			Rating:<br>
+			<input name="rating">
+		</p>
+		<p>
+			Special features:<br>
+			<input name="special_features">
+		</p>
+		<p>
+			<input type="submit" value="Create Film"/>
+		</p>
+	</form>
+	<a href="{{ index_film_link }}">Back</a>
+{% endblock %}
 ```
 
 **show.html**
@@ -2020,7 +2300,59 @@ touch templates/base.html index.html
 >vim templates/films/show.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, title, description, release_year, language_id, rental_duration, rental_rate, length, replacement_cost, rating, special_features, last_update in film %}	
+		<p>
+			<strong>Title</strong>
+			{{ title }}
+		</p>
+		<p>
+			<strong>Description</strong>
+			{{ description }}
+		</p>
+		<p>
+			<strong>Release year</strong>
+			{{ release_year }}
+		</p>
+		<p>
+			<strong>Language id</strong>
+			{{ language_id }}
+		</p>
+		<p>
+			<strong>Rental duration</strong>
+			{{ rental_duration }}
+		</p>
+		<p>
+			<strong>Rental rate</strong>
+			{{ rental_rate }}
+		</p>
+		<p>
+			<strong>Length</strong>
+			{{ length }}
+		</p>
+		<p>
+			<strong>Replacement cost</strong>
+			{{ replacement_cost }}
+		</p>
+		<p>
+			<strong>Rating</strong>
+			{{ rating }}
+		</p>
+		<p>
+			<strong>Special features</strong>
+			{{ special_features }}
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ last_update }} UTC
+		</p>
+
+		<form action="{{ update_film_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_film_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 **update.html**
@@ -2028,7 +2360,60 @@ touch templates/base.html index.html
 >vim templates/films/update.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, title, description, release_year, language_id, rental_duration, rental_rate, length, replacement_cost, rating, special_features, last_update in film %}
+		<form action="{{ update_film_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				Title<br>
+				<input name="title" value="{{ title }}">
+			</p>
+			<p>
+				Description<br>
+				<input name="description" value="{{ description }}">
+			</p>
+			<p>
+				Release year<br>
+				<input name="release_year" value="{{ release_year }}">
+			</p>
+			<p>
+				Language id<br>
+				<input name="language_id" value="{{ language_id }}">
+			</p>
+			<p>
+				Rental duration<br>
+				<input name="rental_duration" value="{{ rental_duration }}">
+			</p>
+			<p>
+				Rental rate<br>
+				<input name="rental_rate" value="{{ rental_rate }}">
+			</p>
+			<p>
+				Length<br>
+				<input name="length" value="{{ length }}">
+			</p>
+			<p>
+				Replacement cost<br>
+				<input name="replacement_cost" value="{{ replacement_cost }}">
+			</p>
+			<p>
+				Rating<br>
+				<input name="rating" value="{{ rating }}">
+			</p>
+			<p>
+				Special features<br>
+				<input name="special_features" value="{{ special_features }}">
+			</p>
+			<p>
+				<input type="submit" value="Update Film">
+			</p>
+		</form>
+		<form action="{{ show_film_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_film_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 ##Filmtexts Templates
@@ -2038,7 +2423,32 @@ touch templates/base.html index.html
 >vim templates/filmtexts/index.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>Title</th>
+				<th>Description</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, title, description in filmtexts %}
+				<tr>
+					<td>{{ title }}</td>
+					<td>{{ description }}</td>
+					<td><form action="{{ show_filmtext_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_filmtext_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_filmtext_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_filmtext_link }}">New Film Text</a>
+{% endblock %}
 ```
 
 **create.html**
@@ -2046,7 +2456,35 @@ touch templates/base.html index.html
 >vim templates/filmtexts/create.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_filmtext_link }}" method="post">
+		<p>
+			Title:<br>
+			<input name="title">
+		</p>
+		<p>
+			Description:<br>
+			<input name="description">
+		</p>
+		<p>
+			<input type="submit" value="Create Film Text"/>
+		</p>
+	</form>
+	<a href="{{ index_filmtext_link }}">Back</a>
+{% endblock %}
 ```
 
 **show.html**
@@ -2054,7 +2492,23 @@ touch templates/base.html index.html
 >vim templates/filmtexts/show.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, title, description in filmtext %}
+		<p>
+			<strong>Title:</strong>
+			{{ title }}
+		</p>
+		<p>
+			<strong>Description:</strong>
+			{{ description }}
+		</p>
+
+		<form action="{{ update_filmtext_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_filmtext_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 **update.html**
@@ -2062,7 +2516,29 @@ touch templates/base.html index.html
 >vim templates/filmtexts/update.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% for id, title, description in filmtext %}
+		<form action="{{ update_filmtext_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				Title<br>
+				<input name="title" value="{{ title }}">
+			</p>
+			<p>
+				Description<br>
+				<input name="description" value="{{ description }}">
+			</p>
+			<p>
+				<input type="submit" value="Update Film Text">
+			</p>
+		</form>
+		<form action="{{ show_filmtext_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_filmtext_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 ##Inventories Templates
@@ -2072,7 +2548,34 @@ touch templates/base.html index.html
 >vim templates/inventories/index.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>Film Id</th>
+				<th>Store Id</th>
+				<th>Last Update</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, film_id, store_id, last_update in inventories %}
+				<tr>
+					<td>{{ film_id }}</td>
+					<td>{{ store_id }}</td>
+					<td>{{ last_update }} UTC</td>
+					<td><form action="{{ show_inventory_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_inventory_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_inventory_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_inventory_link }}">New Inventory</a>
+{% endblock %}
 ```
 
 **create.html**
@@ -2080,7 +2583,35 @@ touch templates/base.html index.html
 >vim templates/inventories/create.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_inventory_link }}" method="post">
+		<p>
+			Film Id:<br>
+			<input name="film_id">
+		</p>
+		<p>
+			Store Id:<br>
+			<input name="store_id">
+		</p>
+		<p>
+			<input type="submit" value="Create Inventory"/>
+		</p>
+	</form>
+	<a href="{{ index_inventory_link }}">Back</a>
+{% endblock %}
 ```
 
 **show.html**
@@ -2088,7 +2619,27 @@ touch templates/base.html index.html
 >vim templates/inventories/show.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, film_id, store_id, last_update in inventory %}
+		<p>
+			<strong>Film Id:</strong>
+			{{ film_id }}
+		</p>
+		<p>
+			<strong>Store Id:</strong>
+			{{ store_id }}
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ last_update }} UTC
+		</p>
+
+		<form action="{{ update_inventory_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_inventory_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 **update.html**
@@ -2096,7 +2647,29 @@ touch templates/base.html index.html
 >vim templates/inventories/update.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% for id, film_id, store_id, last_update in inventory %}
+		<form action="{{ update_inventory_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				Film Id<br>
+				<input name="film_id" value="{{ film_id }}">
+			</p>
+			<p>
+				Store Id<br>
+				<input name="store_id" value="{{ store_id }}">
+			</p>
+			<p>
+				<input type="submit" value="Update Inventory">
+			</p>
+		</form>
+		<form action="{{ show_inventory_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_inventory_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 ##Languages Templates
@@ -2106,7 +2679,32 @@ touch templates/base.html index.html
 >vim templates/languages/index.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Last Update</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, name, last_update in languages %}
+				<tr>
+					<td>{{ name }}</td>
+					<td>{{ last_update }} UTC</td>
+					<td><form action="{{ show_language_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_language_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_language_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_language_link }}">New Language</a>
+{% endblock %}
 ```
 
 **create.html**
@@ -2114,7 +2712,31 @@ touch templates/base.html index.html
 >vim templates/languages/create.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_language_link }}" method="post">
+		<p>
+			Name:<br>
+			<input name="name">
+		</p>
+		<p>
+			<input type="submit" value="Create Language">
+		</p>
+	</form>
+	<a href="{{ index_language_link }}">Back</a>
+{% endblock %}
 ```
 
 **show.html**
@@ -2122,7 +2744,23 @@ touch templates/base.html index.html
 >vim templates/languages/show.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, name, last_update in language %}
+		<p>
+			<strong>Name:</strong>
+			{{ name }}
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ last_update }} UTC
+		</p>
+
+		<form action="{{ update_language_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_language_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 **update.html**
@@ -2130,7 +2768,25 @@ touch templates/base.html index.html
 >vim templates/languages/update.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% for id, name, last_update in language %}
+		<form action="{{ update_language_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				Name<br>
+				<input name="name" value="{{ name }}">
+			</p>
+			<p>
+				<input type="submit" value="Update Language">
+			</p>
+		</form>
+		<form action="{{ show_language_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_language_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 ##Payments Templates
@@ -2140,7 +2796,40 @@ touch templates/base.html index.html
 >vim templates/payments/index.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>Customer Id</th>
+				<th>Staff Id</th>
+				<th>Rental Id</th>
+				<th>Amount</th>
+				<th>Payment Date</th>
+				<th>Last Update</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, customer_id, staff_id, rental_id, amount, payment_date, last_update in payments %}
+				<tr>
+					<td>{{ customer_id }}</td>
+					<td>{{ staff_id }}</td>
+					<td>{{ rental_id }}</td>
+					<td>{{ amount }}</td>
+					<td>{{ payment_date }} UTC</td>
+					<td>{{ last_update }} UTC</td>
+					<td><form action="{{ show_payment_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_payment_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_payment_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_payment_link }}">New Payment</a>
+{% endblock %}
 ```
 
 **create.html**
@@ -2148,7 +2837,43 @@ touch templates/base.html index.html
 >vim templates/payments/create.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_payment_link }}" method="post">
+		<p>
+			Customer id:<br>
+			<input name="customer_id">
+		</p>
+		<p>
+			Staff id:<br>
+			<input name="staff_id">
+		</p>
+		<p>
+			Rental id:<br>
+			<input name="rental_id">
+		</p>
+		<p>
+			Amount:<br>
+			<input name="amount">
+		</p>
+		<p>
+			<input type="submit" value="Create Payment"/>
+		</p>
+	</form>
+	<a href="{{ index_payment_link }}">Back</a>
+{% endblock %}
 ```
 
 **show.html**
@@ -2156,7 +2881,39 @@ touch templates/base.html index.html
 >vim templates/payments/show.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, customer_id, staff_id, rental_id, amount, payment_date, last_update in payment %}
+		<p>
+			<strong>Customer id</strong>
+			{{ customer_id }}
+		</p>
+		<p>
+			<strong>Staff id</strong>
+			{{ staff_id }}
+		</p>
+		<p>
+			<strong>Rental id</strong>
+			{{ rental_id }}
+		</p>
+		<p>
+			<strong>Amount</strong>
+			{{ amount }}
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ payment_date }} UTC
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ last_update }} UTC
+		</p>
+
+		<form action="{{ update_payment_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_payment_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 **update.html**
@@ -2164,7 +2921,36 @@ touch templates/base.html index.html
 >vim templates/payments/update.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, customer_id, staff_id, rental_id, amount, payment_date, last_update in payment %}
+		<form action="{{ update_payment_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				Customer id<br>
+				<input name="customer_id" value="{{ customer_id }}">
+			</p>
+			<p>
+				Staff id<br>
+				<input name="staff_id" value="{{ staff_id }}">
+			</p>
+			<p>
+				Rental id<br>
+				<input name="rental_id" value="{{ rental_id }}">
+			</p>
+			<p>
+				Amount<br>
+				<input name="amount" value="{{ amount }}">
+			</p>
+			<p>
+				<input type="submit" value="Update Payment">
+			</p>
+		</form>
+		<form action="{{ show_payment_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_payment_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 ##Rentals Templates
@@ -2174,7 +2960,40 @@ touch templates/base.html index.html
 >vim templates/rentals/index.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>Rental date</th>
+				<th>Inventory id</th>
+				<th>Customer id</th>
+				<th>Return date</th>
+				<th>Staff id</th>
+				<th>Last updated</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, rental_date, inventory_id, customer_id, return_date, staff_id, last_update in rentals %}
+				<tr>
+					<td>{{ rental_date }} UTC</td>
+					<td>{{ inventory_id }}</td>
+					<td>{{ customer_id }}</td>
+					<td>{{ return_date }} UTC</td>
+					<td>{{ staff_id }}</td>
+					<td>{{ last_update }} UTC</td>
+					<td><form action="{{ show_rental_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_rental_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_rental_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_rental_link }}">New Rental</a>
+{% endblock %}
 ```
 
 **create.html**
@@ -2182,7 +3001,40 @@ touch templates/base.html index.html
 >vim templates/rentals/create.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_rental_link }}" method="post">
+		<p>
+			Inventory id:<br>
+			<input name="inventory_id">
+		</p>
+		<p>
+			Customer id:<br>
+			<input name="customer_id">
+		</p>
+		<p>
+			Staff Id:<br>
+			<input name="staff_id">
+		</p>
+		<p>
+			<input type="submit" value="Create Rental"/>
+		</p>
+
+	</form>
+	<a href="{{ index_rental_link }}">Back</a>
+{% endblock %}
 ```
 
 **show.html**
@@ -2190,7 +3042,39 @@ touch templates/base.html index.html
 >vim templates/rentals/show.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, rental_date, inventory_id, customer_id, return_date, staff_id, last_update in rental %}
+		<p>
+			<strong>Rental date</strong>
+			{{ rental_date }} UTC
+		</p>
+		<p>
+			<strong>Inventory id</strong>
+			{{ inventory_id }}
+		</p>
+		<p>
+			<strong>Customer id</strong>
+			{{ customer_id }}
+		</p>
+		<p>
+			<strong>Return date</strong>
+			{{ return_date }} UTC
+		</p>
+		<p>
+			<strong>Staff id</strong>
+			{{ staff_id }}
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ last_update }} UTC
+		</p>
+
+		<form action="{{ update_rental_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_rental_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 **update.html**
@@ -2198,7 +3082,32 @@ touch templates/base.html index.html
 >vim templates/rentals/update.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, rental_date, inventory_id, customer_id, return_date, staff_id, last_update in rental %}
+		<form action="{{ update_rental_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				Inventory id<br>
+				<input name="inventory_id" value="{{ inventory_id }}">
+			</p>
+			<p>
+				Customer id<br>
+				<input name="customer_id" value="{{ customer_id }}">
+			</p>
+			<p>
+				Staff id<br>
+				<input name="staff_id" value="{{ staff_id }}">
+			</p>
+			<p>
+				<input type="submit" value="Update Rental">
+			</p>
+		</form>
+		<form action="{{ show_rental_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_rental_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 ##Staffs Templates
@@ -2208,7 +3117,46 @@ touch templates/base.html index.html
 >vim templates/staffs/index.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Address id</th>
+				<th>Email</th>
+				<th>Store id</th>
+				<th>Active</th>
+				<th>Username</th>
+				<th>Password</th>
+				<th>Last updated</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, first_name, last_name, address_id, email, store_id, active, username, password, last_update in staffs %}
+				<tr>
+					<td>{{ first_name }}</td>
+					<td>{{ last_name }}</td>
+					<td>{{ address_id }}</td>
+					<td>{{ email }}</td>
+					<td>{{ store_id }}</td>
+					<td>{{ active }}</td>
+					<td>{{ username }}</td>
+					<td>{{ password }}</td>
+					<td>{{ last_update }} UTC</td>
+					<td><form action="{{ show_staff_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_staff_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_staff_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_staff_link }}">New Staff</a>
+{% endblock %}
 ```
 
 **create.html**
@@ -2216,7 +3164,60 @@ touch templates/base.html index.html
 >vim templates/staffs/create.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_staff_link }}" method="post">
+		<p>
+			First Name:<br>
+			<input name="first_name">
+		</p>
+		<p>
+			Last Name:<br>
+			<input name="last_name">
+		</p>
+		<p>
+			Address id:<br>
+			<input name="address_id">
+		</p>
+		<p>
+			Email:<br>
+			<input name="email">
+		</p>
+		<p>
+			Store id:<br>
+			<input name="store_id">
+		</p>
+		<p>
+			Active:<br>
+			<input type="checkbox" name="active">
+		</p>
+		<p>
+			Username:<br>
+			<input name="username">
+		</p>
+		<p>
+			Password:<br>
+			<input name="password">
+		</p>
+		<p>
+			<input type="submit" value="Create Staff">
+		</p>
+
+	</form>
+	<a href="{{ index_staff_link }}">Back</a>
+{% endblock %}
 ```
 
 **show.html**
@@ -2224,7 +3225,50 @@ touch templates/base.html index.html
 >vim templates/staffs/show.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, first_name, last_name, address_id, email, store_id, active, username, password, last_update in staff %}
+		<p>
+			<strong>First Name:</strong>
+			{{ first_name }}
+		</p>
+		<p>
+			<strong>Last Name:</strong>
+			{{ last_name }}
+		</p>
+		<p>
+			<strong>Address id:</strong>
+			{{ address_id }}
+		</p>
+		<p>
+			<strong>Email:</strong>
+			{{ email }}
+		</p>
+		<p>
+			<strong>Store id:</strong>
+			{{ store_id }}
+		</p>
+		<p>
+			<strong>Active:</strong>
+			{{ active }}
+		</p>
+		<p>
+			<strong>Username:</strong>
+			{{ username }}
+		</p>
+		<p>
+			<strong>Password:</strong>
+			{{ password }}
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ last_update }} UTC
+		</p>
+		<form action="{{ update_staff_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_staff_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 **update.html**
@@ -2232,7 +3276,52 @@ touch templates/base.html index.html
 >vim templates/staffs/update.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, first_name, last_name, address_id, email, store_id, active, username, password, last_update in staff %}
+		<form action="{{ update_staff_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				First name<br>
+				<input name="first_name" value="{{ first_name }}">
+			</p>
+			<p>
+				Last name<br>
+				<input name="last_name" value="{{ last_name }}">
+			</p>
+			<p>
+				Address id<br>
+				<input name="address_id" value="{{ address_id }}">
+			</p>
+			<p>
+				Email<br>
+				<input name="email" value="{{ email }}">
+			</p>
+			<p>
+				Store id<br>
+				<input name="store_id" value="{{ store_id }}">
+			</p>
+			<p>
+				Active<br>
+				<input type="checkbox" name="active" value="{{ active }}">
+			</p>
+			<p>
+				Username<br>
+				<input name="username" value="{{ username }}">
+			</p>
+			<p>
+				Password<br>
+				<input name="password" value="{{ password }}">
+			</p>
+			<p>
+				<input type="submit" value="Update Staff">
+			</p>
+		</form>
+		<form action="{{ show_staff_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_staff_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 ##Stores Templates
@@ -2242,7 +3331,32 @@ touch templates/base.html index.html
 >vim templates/stores/index.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	<table>
+		<thead>
+			<tr>
+				<th>Address Id</th>
+				<th>Last Update</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for id, address_id, last_update in stores %}
+				<tr>
+					<td>{{ address_id }}</td>
+					<td>{{ last_update }} UTC</td>
+					<td><form action="{{ show_store_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Show"></form></td>
+					<td><form action="{{ update_store_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Edit"></form></td>
+					<td><form action="{{ delete_store_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><input type="submit" value="Destroy"></form></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br>
+	<a href="{{ create_store_link }}">New Store</a>
+{% endblock %}
 ```
 
 **create.html**
@@ -2250,7 +3364,31 @@ touch templates/base.html index.html
 >vim templates/stores/create.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+	<form action="{{ save_store_link }}" method="post">
+		<p>
+			Address Id:<br>
+			<input name="address_id">
+		</p>
+		<p>
+			<input type="submit" value="Create Store">
+		</p>
+	</form>
+	<a href="{{ index_store_link }}">Back</a>
+{% endblock %}
 ```
 
 **show.html**
@@ -2258,7 +3396,23 @@ touch templates/base.html index.html
 >vim templates/stores/show.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, address_id, last_update in store %}
+		<p>
+			<strong>Address Id:</strong>
+			{{ address_id }}
+		</p>
+		<p>
+			<strong>Last update:</strong>
+			{{ last_update }} UTC
+		</p>
+
+		<form action="{{ update_store_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Edit</button></form>
+		<form action="{{ index_store_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
 
 **update.html**
@@ -2266,5 +3420,39 @@ touch templates/base.html index.html
 >vim templates/stores/update.html
 
 ```
+{% extends "base.html" %}
 
+{% block body %}
+	{% for id, address_id, last_update in store %}
+		<form action="{{ update_store_save_link }}" method="post">
+			<input type="hidden" name="id" value="{{ id }}">
+			<p>
+				Address Id<br>
+				<input name="address_id" value="{{ address_id }}">
+			</p>
+			<p>
+				<input type="submit" value="Update Store">
+			</p>
+		</form>
+		<form action="{{ show_store_link }}" method="POST"><input type="hidden" name="id" value="{{ id }}"><button type="submit">Show</button></form>
+		<form action="{{ index_store_link }}" method="POST"><button type="submit">Back</button></form>
+	{% endfor %}		
+{% endblock %}
 ```
+
+=
+###Getting production ready
+
+Remove debug = True from the app.run() line at the end of the __init__.py file.
+If you were to host this on a platform you would also need to move the if __name__ == "__main__" statement to below the database settings but still above the app.run() line. This means that the app can still get the database settings if it is not run locally.
+
+=
+###The End
+
+That's all there is to it.
+
+Thanks for reading and hopefully you learned something. :)
+
+Darren.
+
+
