@@ -7,7 +7,7 @@ performing benchmarking tests on.
 See my Ruby on Rails version of this application here: https://github.com/archerydwd/ror_sakila
 The Chicago Boss version is here: https://github.com/archerydwd/cb_sakila
 
-I am going to be performing tests on this app using some load testing tools such as Gatling & Tsung. 
+I am going to be performing tests on this app using some load testing tools such as Gatling & Tsung. The guide for running the tests can be found here: https://github.com/archerydwd/gatling-tests
 
 Once I have tested this application and the other verisons of it, I will publish the results, which can then be used as a benchmark for others when choosing a framework.
 
