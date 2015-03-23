@@ -1,20 +1,23 @@
 # flask-sakila
 
-Please note this is not a tutorial, I have wrote it in that style so you can follow along. If you get into trouble (like I did) try the mailing list or just google it. You will find that you will actually learn more from researching it and getting into tight spots. ;) 
+This is a tutorial for building a Flask sakila application. If you get into trouble (like I did) try the mailing list or google it. For all the problems that I had, I have noted below the fixes I used.
 
 I built this app with the Flask micro-framework to be used as part of a series of applications that I will be 
-performing tests on. This is a Flask version of the Ruby on Rails sakila application: https://github.com/archerydwd/ror_sakila & the Chicago Boss version is here: https://github.com/archerydwd/cb_sakila
+performing benchmarking tests on.
+See my Ruby on Rails version of this application here: https://github.com/archerydwd/ror_sakila
+The Chicago Boss version is here: https://github.com/archerydwd/cb_sakila
 
 I am going to be performing tests on this app using some load testing tools such as Gatling & Tsung. 
 
-Once I have tested this application and the other verisons of it, I will publish the results, which can then be used as a benchmark for others when trying to choose a framework.
+Once I have tested this application and the other verisons of it, I will publish the results, which can then be used as a benchmark for others when choosing a framework.
 
-You can build this app using a framework of your choosing and then follow the testing mechanisms that I will describe and then compare the results against my benchmark to get an indication of performance levels of your chosen framework.
+You can build this app using a framework of your choosing and then follow the testing mechanisms that I have described here: https://github.com/archerydwd/gatling-tests
+Then compare your results against my benchmarks to get an indication of performance levels for your chosen framework.
 
 =
 ###Install Python
 
-At time of writing this the Python version was: 3.4.3 and the Flask version was: 0.10.1
+At the time of writing this the Python version was: 3.4.3 and the Flask version was: 0.10.1
 
 **On OSX** 
 
@@ -36,7 +39,7 @@ sudo make install
 =
 ###Install pip on linux
 
-We will use pip to install flask.
+We will use pip to install flask. On OSX pip comes as part of the python library.
 
 ```
 sudo apt-get install python-pip
