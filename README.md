@@ -3449,9 +3449,7 @@ If you were to host this on a platform you would also need to move the if __name
 =
 ###The End
 
-That's all there is to it.
-
-Thanks for reading and hopefully you learned something. :)
+Thanks for reading.
 
 Darren.
 
