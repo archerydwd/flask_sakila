@@ -1,3 +1,7 @@
+'''
+Author: Darren Daly
+Version: 1.0
+'''
 from flask import Flask, render_template, request, url_for, redirect, flash
 import datetime
 from MyUtils import UseDatabase

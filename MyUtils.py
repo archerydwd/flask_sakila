@@ -1,3 +1,7 @@
+'''
+Author: Darren Daly
+Version: 1.0
+'''
 import mysql.connector
 
 class UseDatabase:
